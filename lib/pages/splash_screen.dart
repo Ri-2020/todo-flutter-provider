@@ -1,27 +1,34 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:todo/pages/home_page.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
-  static const String routeName = "/welcome";
+  static const String routeName = "/";
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  bool _isNavigated = false;
-
   void _goToHomePage() {
-    if (!_isNavigated) {
-      _isNavigated = true;
-      Navigator.pushReplacementNamed(context, HomePage.routeName);
-    }
+    Navigator.pushReplacementNamed(context, HomePage.routeName);
+    return;
   }
 
   @override
   void initState() {
-    Future.delayed(const Duration(seconds: 3), _goToHomePage);
+    Logger().i("Route to -> Splash Screen");
+    Future.delayed(
+      const Duration(seconds: 3),
+      () {
+        _goToHomePage();
+        return;
+      },
+    );
+
     super.initState();
   }
 

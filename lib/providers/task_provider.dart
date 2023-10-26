@@ -9,22 +9,13 @@ import 'package:todo/utils/utils.dart';
 class TaskProvider extends ChangeNotifier {
   List<Task> tasks = [];
 
-  // List<Task> inCompleteTasks = [];
-
-  // void getIncompleteTasks() {
-  //   Logger().i(
-  //       "Incomplete Tasks: ${tasks.where((element) => !element.isDone).toList().length}");
-  //   inCompleteTasks = tasks.where((element) => !element.isDone).toList();
-  // }
-
   Future<void> loadTasks() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    Logger().i(
-        "Load Task Fuction running containes key: ${prefs.containsKey(UtilStirngs.taskKey)}");
+
     try {
       if (prefs.containsKey(UtilStirngs.taskKey)) {
         String? strList = prefs.getString(UtilStirngs.taskKey) ?? "[]";
-        Logger().i("STRLIS in load tasks: $strList");
+
         List<dynamic> strl = jsonDecode(strList);
 
         tasks = strl.map(
@@ -32,7 +23,6 @@ class TaskProvider extends ChangeNotifier {
             return Task.fromJson(jsonDecode(e));
           },
         ).toList();
-        // getIncompleteTasks();
         notifyListeners();
       }
     } catch (e) {
@@ -41,16 +31,19 @@ class TaskProvider extends ChangeNotifier {
   }
 
   Future<void> saveTasks() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> strList = tasks
-        .map(
-          (item) => jsonEncode(
-            item.toJson(),
-          ),
-        )
-        .toList();
-    prefs.setString(UtilStirngs.taskKey, jsonEncode(strList));
-    // getIncompleteTasks();
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      List<String> strList = tasks
+          .map(
+            (item) => jsonEncode(
+              item.toJson(),
+            ),
+          )
+          .toList();
+      prefs.setString(UtilStirngs.taskKey, jsonEncode(strList));
+    } catch (e) {
+      Logger().e("Error while saving tasks: $e");
+    }
   }
 
   Future<void> addTask(Task task) async {
@@ -66,7 +59,6 @@ class TaskProvider extends ChangeNotifier {
   }
 
   void toggleTaskDone(int index) async {
-    Logger().i("Toggle task done");
     tasks[index].isDone = !tasks[index].isDone;
     Task thisTask = tasks[index];
     tasks.removeAt(index);

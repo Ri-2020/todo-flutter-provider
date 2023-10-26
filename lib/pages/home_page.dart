@@ -1,16 +1,13 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:todo/models/task.dart';
 import 'package:todo/pages/add_task_modal_sheet.dart';
 import 'package:todo/providers/task_provider.dart';
 import 'package:todo/utils/widgets/task_card.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
-  static const String routeName = "/";
+  static const String routeName = "/home";
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -19,8 +16,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   void initState() {
+    Logger().i("Route to -> HomePage");
     super.initState();
-    Provider.of<TaskProvider>(context, listen: false).loadTasks();
   }
 
   void _showAddTaskBottomModalSheet() {
@@ -37,6 +34,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<TaskProvider>(context, listen: false).loadTasks();
     return Consumer<TaskProvider>(
       builder: (context, taskProvider, child) => Scaffold(
         floatingActionButton: FloatingActionButton(
